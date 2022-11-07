@@ -46,7 +46,7 @@
                     </a>
                     <ul class="submenu ">
                         <li class="submenu-item ">
-                            <a href="/litmus-admin/candidate/list">List</a>
+                            <a href="/candidate/list">List</a>
                         </li>
                         <li class="submenu-item ">
                             <a href="component-alert.html">Alert</a>

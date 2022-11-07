@@ -109,7 +109,9 @@ function get_time_ago($time)
                                     <div class="collapse" id="collapseExample">
                                         <div class="card-body">
                                             <table>
+                                                <tbody>
                                                 <?php include './referee.php' ?>
+                                                </tbody>
                                                 <tfoot>
                                                     <tr>
                                                         <th>
@@ -130,14 +132,27 @@ function get_time_ago($time)
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h5 class="btn  btn-primary card-title text-capitalize" data-bs-target="#collapsenok" type="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">Applicant's Next of Kin</h5>
-                                    </div>
+                                    <h5 class=" card-title text-capitalize" type="button" data-bs-toggle="collapse" data-bs-target="#collapsenok" aria-expanded="false" aria-controls="collapseExample">Applicant's Next of Kin</h5>
+
+                                </div>
                                     <div class="collapse" id="collapsenok">
                                         <div class="card-body">
                                             <table class="table" id="table1">
                                                 <tbody>
                                                     <?php include './nok.php' ?>
                                                 </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th>
+                                                            <form action="nokPDF" method="POST">
+                                                                <input type="hidden" name="user_email" value="<?php echo $user['user_email'] ?>">
+                                                                <input type="hidden" name="user_name" value="<?php echo $user['fname'] . ' ' . $user['fname']; ?>">
+
+                                                                <input type="submit" name="download" class="btn btn-primary" value="Download PDF" />
+                                                            </form>
+                                                        </th>
+                                                    </tr>
+                                                </tfoot>
                                             </table>
                                         </div>
                                     </div>

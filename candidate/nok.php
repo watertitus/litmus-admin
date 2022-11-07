@@ -14,6 +14,20 @@ try {
         foreach ($gest as $key => $users) {
             if (!empty($users['nok_email']) || !empty($users['nok_fname']) || !empty($users['nok_relation'])) { ?>
                 <tr>
+
+                    <th>
+                        <strong> Refree <?php echo $count += 1; ?></strong>
+                    </th>
+                    <th>
+
+                        <p class="h3 text-success"><i class="bi bi-check2-circle"></i></p>
+
+
+
+                    </th>
+
+                </tr>
+                <tr>
                     <td>Next of kin's Name: </td>
                     <td> <?php echo $users['nok_fname']  ?> <?php echo $users['nok_lname']  ?></td>
                     <td>Next of kin's Email: </td>
