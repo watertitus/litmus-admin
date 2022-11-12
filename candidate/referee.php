@@ -22,10 +22,19 @@ try {
                     $query = "DELETE FROM " . $table . " WHERE " . $table . "_id=?";
                     $stmt = $conn->prepare($query);
 
-                    $mail->setFrom('jobs@litmusservices.co.uk', 'Litmus Services ');
+                    $mail->isSMTP();                            // Set mailer to use SMTP 
+                    $mail->Host = 'litmusservices.co.uk';           // Specify main and backup SMTP servers 
+                    $mail->SMTPAuth = true;                     // Enable SMTP authentication 
+                    $mail->Username = 'team@litmusservices.co.uk';       // SMTP username 
+                    $mail->Password = 'AwfU$;HYR2=E';         // SMTP password 
+                    $mail->SMTPSecure = 'ssl';                  // Enable TLS encryption, `ssl` also accepted 
+                    $mail->Port = 465;                          // TCP port to connect to 
+                    $mail->isHTML(true); 
+                    
+                    $mail->setFrom('team@litmusservices.co.uk', 'Litmus Services ');
                     /* Add a recipient. */
                     $mail->addAddress($cand_email);
-
+                   
                     /* Set the subject. */
                     $mail->Subject = 'Urgent: Reference Declined';
 
@@ -54,7 +63,7 @@ try {
                     echo $th->getMessage();
                 }
             } elseif (isset($_POST['approve'])) {
-              
+
                 try {
                     $id = $_POST['id'];
                     $cand_email = $_POST['user_email'];
@@ -66,12 +75,19 @@ try {
                     $stmt = $conn->prepare($query);
                     $stmt->bindParam(':id', $id);
                     $stmt->bindParam(':isRefApproved', $isRefApproved);
-                   
 
-                    $mail->setFrom('jobs@litmusservices.co.uk', 'Litmus Services ');
+                    $mail->isSMTP();                            // Set mailer to use SMTP 
+                    $mail->Host = 'litmusservices.co.uk';           // Specify main and backup SMTP servers 
+                    $mail->SMTPAuth = true;                     // Enable SMTP authentication 
+                    $mail->Username = 'team@litmusservices.co.uk';       // SMTP username 
+                    $mail->Password = 'AwfU$;HYR2=E';         // SMTP password 
+                    $mail->SMTPSecure = 'ssl';                  // Enable TLS encryption, `ssl` also accepted 
+                    $mail->Port = 465;                          // TCP port to connect to 
+
+                    $mail->setFrom('team@litmusservices.co.uk', 'Litmus Services ');
                     /* Add a recipient. */
                     $mail->addAddress($cand_email);
-
+                    $mail->isHTML(true); 
                     /* Set the subject. */
                     $mail->Subject = 'Congratulations: One of your referee is approved';
 
@@ -94,7 +110,7 @@ try {
                     $mail->Body = $html;
                     if ($stmt->execute() && $mail->send()) {
                         http_response_code(200);
-                        echo json_encode(http_response_code(200));
+                        // echo json_encode(http_response_code(200));
                     }
                 } catch (Exception $th) {
                     http_response_code(400);
@@ -105,7 +121,7 @@ try {
             <tr>
 
                 <th>
-                    <strong> Refree <?php echo $count += 1; ?></strong>
+                    <strong> Refree <?php echo $count += 1; ?><br /> <small class="text-muted">Updated <?php echo get_time_ago(strtotime($users['updated_at']))  ?></small></strong>
                 </th>
                 <th>
                     <?php
@@ -139,7 +155,7 @@ try {
                 <td> <?php echo $users['ref_mobile']  ?></td>
             </tr>
             <tr>
-                <td colspan="4"><strong>Referee Response</strong> <small class="text-muted">Updated <?php echo get_time_ago(strtotime($users['updated_at']))  ?></small></td>
+                <td colspan="4"></td>
             </tr>
             <?php
             if ($users['isRefResponded'] === 'true') { ?>
@@ -171,7 +187,7 @@ try {
     } else { ?>
         <tr>
             <td colspan="4"><strong><span class="text-danger">Data cannot be retrieved at the moment!<br />
-                        It may seems that the applicant has not Completed their Next of Reference form.</span></strong></td>
+                        It may seems that the applicant has not Completed their Reference form.</span></strong></td>
         </tr>
 
 

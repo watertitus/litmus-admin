@@ -3,25 +3,77 @@ session_start();
 if (!$_SESSION['admin']) {
     header('Location: login');
 }
-include_once './../config/database.php';
+include_once '../../config/database.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 
-require './../vendor/autoload.php';
+require '../../vendor/autoload.php';
 $databaseService = new DatabaseService();
 $conn = $databaseService->getConnection();
 
 
-require('../vendor/fpdf/fpdf.php');
+require('../../vendor/fpdf/fpdf.php');
 
+class PDF extends FPDF
+{
+function WordWrap(&$text, $maxwidth)
+{
+    $text = trim($text);
+    if ($text==='')
+        return 0;
+    $space = $this->GetStringWidth(' ');
+    $lines = explode("\n", $text);
+    $text = '';
+    $count = 0;
 
-if (isset($_POST['download'])) {
-    class PDF extends FPDF
+    foreach ($lines as $line)
     {
-        // Page header
-        function Header()
+        $words = preg_split('/ +/', $line);
+        $width = 0;
+
+        foreach ($words as $word)
+        {
+            $wordwidth = $this->GetStringWidth($word);
+            if ($wordwidth > $maxwidth)
+            {
+                // Word is too long, we cut it
+                for($i=0; $i<strlen($word); $i++)
+                {
+                    $wordwidth = $this->GetStringWidth(substr($word, $i, 1));
+                    if($width + $wordwidth <= $maxwidth)
+                    {
+                        $width += $wordwidth;
+                        $text .= substr($word, $i, 1);
+                    }
+                    else
+                    {
+                        $width = $wordwidth;
+                        $text = rtrim($text)."\n".substr($word, $i, 1);
+                        $count++;
+                    }
+                }
+            }
+            elseif($width + $wordwidth <= $maxwidth)
+            {
+                $width += $wordwidth + $space;
+                $text .= $word.' ';
+            }
+            else
+            {
+                $width = $wordwidth + $space;
+                $text = rtrim($text)."\n".$word.' ';
+                $count++;
+            }
+        }
+        $text = rtrim($text)."\n";
+        $count++;
+    }
+    $text = rtrim($text);
+    return $count;
+}
+function Header()
         {
             // Logo
             $this->Image('http://localhost:3000/litmusLogo.png', 10, 6, 30);
@@ -45,7 +97,9 @@ if (isset($_POST['download'])) {
             // Page number
             $this->Cell(0, 10, 'Page ' . $this->PageNo() . '/{nb}', 0, 0, 'C');
         }
-    }
+}
+if (isset($_POST['download'])) {
+   
 
     $pdf = new FPDF();
 
@@ -90,33 +144,38 @@ if (isset($_POST['download'])) {
             $pdf->SetFont('times', '', 9);
             if ($users['isRefResponded'] === 'true') {
                 //line
-                $pdf->Cell(30, 7, "organisation: ", 0, 0);
-                $pdf->Cell(30, 7, $users['organisation'], 0, 1);
+                $pdf->Cell(50, 7, "Organisation: ", 0, 0);
+                $pdf->Cell(50, 7, $users['organisation'], 0, 1);
                 //line
-                $pdf->Cell(30, 7, "Applicant’s position ", 0, 0);
-                $pdf->Cell(60, 7, $users['ref_candidate_position'], 0, 0);
-                $pdf->Cell(30, 7, "Other Applicant’s position ", 0, 0);
-                $pdf->Cell(30, 7, $users['ref_other_position'], 0, 1);
+                $pdf->Cell(50, 7, "Position ", 0, 0);
+                $pdf->Cell(60, 7, $users['ref_candidate_position'], 0, 1);
+                $pdf->Cell(50, 7, "Other position ", 0, 0);
+                $pdf->Cell(50, 7, $users['ref_other_position'], 0, 1);
                 //line
-                $pdf->Cell(30, 7, "Candidate’s  communication:", 0, 0);
-                $pdf->Cell(60, 7, $users['candidate_communication'], 0, 0);
+                $pdf->Cell(50, 7, "Communication:", 0, 0);
+                $pdf->Cell(60, 7, $users['candidate_communication'], 0, 1);
 
-                $pdf->Cell(50, 7, "candidate’s Punctuality: ", 0, 0);
+                $pdf->Cell(50, 7, "Punctuality: ", 0, 0);
                 $pdf->Cell(50, 7, $users['candidate_punctuality'], 0, 1);
                 //line
-                $pdf->Cell(50, 7, "Candidate’s Professionalism/conduct: ", 0, 0);
+                $pdf->Cell(50, 7, "Professionalism/conduct: ", 0, 0);
                 $pdf->Cell(50, 7, $users['candidate_conduct'], 0, 1);
                 //line
-                $pdf->Cell(50, 7, "Candidate’s Reliability/timekeeping: ", 0, 0);
+                $pdf->Cell(50, 7, "Reliability/timekeeping: ", 0, 0);
                 $pdf->Cell(50, 7, $users['candidate_reliability'], 0, 1);
                 //line
-                $pdf->Cell(50, 7, "Candidate’s Job Suitability: ", 0, 0);
+                $pdf->Cell(50, 7, "Job Suitability: ", 0, 0);
                 $pdf->Cell(50, 7, $users['candidate_suitability'], 0, 1);
                 //line
-                $pdf->Cell(50, 7, "Additional, relevant comments: ", 0, 0);
-                $pdf->Cell(50, 7, $users['ref_repsonse'], 0, 1);
+                $pdf->SetFont('times', 'B', 9);
+                $text = $users['ref_repsonse'];
+                $pdf->Cell(50, 7, "Additional, relevant comments: ", 0, 1);
+                $pdf->SetFont('times', '', 9);
+                $pdf->Write(5,$text);
+                
+                // $pdf->Cell(100, 0, $users['ref_repsonse'], 0, 1);
             } else {
-                $pdf->Cell(50, 7, "Applicant's Referee hasn't responded yet!", 0, 1);
+                $pdf->Cell(50, 7, "Referee hasn't responded yet!", 0, 1);
             }
             $pdf->Ln();
         }

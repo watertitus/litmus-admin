@@ -18,15 +18,15 @@ function get_time_ago($time)
     $time_difference = time() - $time;
 
     if ($time_difference < 1) {
-        return 'less than 1 second ago';
+        return '1 Sec. ago';
     }
     $condition = array(
-        12 * 30 * 24 * 60 * 60 =>  'year',
-        30 * 24 * 60 * 60       =>  'month',
-        24 * 60 * 60            =>  'day',
-        60 * 60                 =>  'hour',
-        60                      =>  'minute',
-        1                       =>  'second'
+        12 * 30 * 24 * 60 * 60 =>  'Yr',
+        30 * 24 * 60 * 60       =>  'M',
+        24 * 60 * 60            =>  'D',
+        60 * 60                 =>  'H',
+        60                      =>  'Min',
+        1                       =>  'Sec'
     );
 
     foreach ($condition as $secs => $str) {
@@ -34,7 +34,7 @@ function get_time_ago($time)
 
         if ($d >= 1) {
             $t = round($d);
-            return 'about ' . $t . ' ' . $str . ($t > 1 ? 's' : '') . ' ago';
+            return $t . ' ' . $str . ($t > 1 ? 's' : '') . ' ago';
         }
     }
 }
@@ -56,6 +56,7 @@ function get_time_ago($time)
     <link rel="stylesheet" href="../assets/css/pages/fontawesome.css">
     <link rel="stylesheet" href="../assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="../assets/css/pages/datatables.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
 </head>
 
@@ -104,18 +105,18 @@ function get_time_ago($time)
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h5 class=" card-title text-capitalize" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Applicant's Referee</h5>
+                                        <h5 class=" card-title text-capitalize" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Referee</h5>
                                     </div>
                                     <div class="collapse" id="collapseExample">
                                         <div class="card-body">
-                                            <table>
+                                            <table id="ref">
                                                 <tbody>
-                                                <?php include './referee.php' ?>
+                                                    <?php include './referee.php' ?>
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
                                                         <th>
-                                                            <form action="referencePDF" method="POST">
+                                                            <form action="./pdf/referencePDF" method="POST">
                                                                 <input type="hidden" name="user_email" value="<?php echo $user['user_email'] ?>">
                                                                 <input type="hidden" name="user_name" value="<?php echo $user['fname'] . ' ' . $user['fname']; ?>">
 
@@ -132,19 +133,108 @@ function get_time_ago($time)
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-header">
-                                    <h5 class=" card-title text-capitalize" type="button" data-bs-toggle="collapse" data-bs-target="#collapsenok" aria-expanded="false" aria-controls="collapseExample">Applicant's Next of Kin</h5>
+                                        <h5 class=" card-title text-capitalize" type="button" data-bs-toggle="collapse" data-bs-target="#collapsenok" aria-expanded="false" aria-controls="collapseExample">Next of Kin</h5>
 
-                                </div>
+                                    </div>
                                     <div class="collapse" id="collapsenok">
                                         <div class="card-body">
-                                            <table class="table" id="table1">
-                                                <tbody>
+                                            <table>
+                                                <tbody id="nok">
                                                     <?php include './nok.php' ?>
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
                                                         <th>
-                                                            <form action="nokPDF" method="POST">
+                                                            <form action="./pdf/nokPDF.php" method="POST">
+                                                                <input type="hidden" name="user_email" value="<?php echo $user['user_email'] ?>">
+                                                                <input type="hidden" name="user_name" value="<?php echo $user['fname'] . ' ' . $user['fname']; ?>">
+
+                                                                <input type="submit" name="download" class="btn btn-primary" value="Download PDF" />
+                                                            </form>
+                                                        </th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class=" card-title text-capitalize" type="button" data-bs-toggle="collapse" data-bs-target="#collapsework" aria-expanded="false" aria-controls="collapseExample">Work Permit</h5>
+
+                                    </div>
+                                    <div class="collapse" id="collapsework">
+                                        <div class="card-body">
+                                            <table>
+                                                <tbody id="work">
+                                                    <?php include './work.php' ?>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th colspan="2">
+                                                            <form action="./pdf/workPDF.php" method="POST">
+                                                                <input type="hidden" name="user_email" value="<?php echo $user['user_email'] ?>">
+                                                                <input type="hidden" name="user_name" value="<?php echo $user['fname'] . ' ' . $user['fname']; ?>">
+
+                                                                <input type="submit" name="download" class="btn btn-primary" value="Download PDF" />
+                                                            </form>
+                                                        </th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class=" card-title text-capitalize" type="button" data-bs-toggle="collapse" data-bs-target="#collapsequal" aria-expanded="false" aria-controls="collapseExample">Qualification</h5>
+
+                                    </div>
+                                    <div class="collapse" id="collapsequal">
+                                        <div class="card-body">
+                                            <table>
+                                                <tbody id="qual">
+                                                    <?php include './qual.php' ?>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th>
+                                                            <form action="./pdf/workPDF.php" method="POST">
+                                                                <input type="hidden" name="user_email" value="<?php echo $user['user_email'] ?>">
+                                                                <input type="hidden" name="user_name" value="<?php echo $user['fname'] . ' ' . $user['fname']; ?>">
+
+                                                                <input type="submit" name="download" class="btn btn-primary" value="Download PDF" />
+                                                            </form>
+                                                        </th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class=" card-title text-capitalize" type="button" data-bs-toggle="collapse" data-bs-target="#collapsequal" aria-expanded="false" aria-controls="collapseExample">DBS</h5>
+
+                                    </div>
+                                    <div class="collapse" id="collapsequal">
+                                        <div class="card-body">
+                                            <table>
+                                                <tbody id="qual">
+                                                    <?php include './dbs.php' ?>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th>
+                                                            <form action="./pdf/workPDF.php" method="POST">
                                                                 <input type="hidden" name="user_email" value="<?php echo $user['user_email'] ?>">
                                                                 <input type="hidden" name="user_name" value="<?php echo $user['fname'] . ' ' . $user['fname']; ?>">
 
@@ -178,6 +268,25 @@ function get_time_ago($time)
     <?php  }
                             }    ?>
     </div>
+
+    <script>
+        setInterval(function() {
+            $('#approvedCandNo').load('getApprovedCand.php');
+        }, 2000) /* time in milliseconds (ie 2 seconds)*/
+
+        setInterval(function() {
+            $('#pendingCand').load('getPendingCand.php');
+        }, 2000) /* time in milliseconds (ie 2 seconds)*/
+        setInterval(function() {
+            $('#CountAllCand').load('CountAllCand.php');
+        }, 2000) /* time in milliseconds (ie 2 seconds)*/
+        setInterval(function() {
+            $('#rightToWork').load('ComplianceCheckRTW.php');
+        }, 2000) /* time in milliseconds (ie 2 seconds)*/
+        setInterval(function() {
+            $('#uname').load('getUsername.php');
+        }, 2000) /* time in milliseconds (ie 2 seconds)*/
+    </script>
     <script src="../assets/js/bootstrap.js"></script>
     <script src="../assets/js/app.js"></script>
 

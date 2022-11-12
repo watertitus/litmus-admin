@@ -1,7 +1,6 @@
 <?php
 session_start();
-if ($_SESSION['admin']) {
-
+if (isset($_SESSION['admin'])) {
     header('Location: ./');
 }
 

@@ -36,7 +36,8 @@ if (isset($_POST['login'])) {
             }
             $secretKey  = generateRandomString();
             $_SESSION['admin'] = $email;
-            $_SESSION['token'] = $$row['password'];
+            $_SESSION['token'] = $secretKey;
+            $_SESSION['username'] = $row['username'];
             
             echo '<script>window.location.replace("dashboard");</script>';
             exit;

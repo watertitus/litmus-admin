@@ -1,9 +1,8 @@
 <?php
 session_start();
-// if (!$_SESSION['admin']) {
-
-//    // header('Location: login');
-// }
+if (!$_SESSION['admin']) {
+   header('Location: login');
+}
 include_once 'config/database.php';
 
 // use PHPMailer\PHPMailer\PHPMailer;
@@ -101,12 +100,12 @@ function get_time_ago($time)
                                 <div class="card">
                                     <div class="card-body px-4 py-4-5">
                                         <div class="row">
-                                            <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
+                                            <div class="col-md-2 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
                                                 <div class="stats-icon blue mb-2">
                                                 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="mdi-account-alert-outline" width="24" height="24" viewBox="0 0 24 24"><path d="M20 12V7H22V13H20M20 17H22V15H20M10 13C12.67 13 18 14.34 18 17V20H2V17C2 14.34 7.33 13 10 13M10 4A4 4 0 0 1 14 8A4 4 0 0 1 10 12A4 4 0 0 1 6 8A4 4 0 0 1 10 4M10 14.9C7.03 14.9 3.9 16.36 3.9 17V18.1H16.1V17C16.1 16.36 12.97 14.9 10 14.9M10 5.9A2.1 2.1 0 0 0 7.9 8A2.1 2.1 0 0 0 10 10.1A2.1 2.1 0 0 0 12.1 8A2.1 2.1 0 0 0 10 5.9Z" /></svg>
                                                 </div>
                                             </div>
-                                            <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
+                                            <div class="col-md-10 col-lg-12 col-xl-12 col-xxl-7">
                                                 <h3 class="font-extrabold mb-0" id="pendingCand">
                                                 <div class="spinner-border" role="status">
                                                         <span class="visually-hidden">Loading...</span>
@@ -202,8 +201,10 @@ function get_time_ago($time)
                                         <img src="assets/images/faces/1.jpg" alt="Face 1">
                                     </div>
                                     <div class="ms-3 name">
-                                        <h5 class="font-bold"><?php echo 'Welcome ' . ($_SESSION['username'] ? empty($_SESSION['username']) : 'Guest') . '!'; ?></h5>
-                                        <h6 class="text-muted mb-0">@</h6>
+                                        <h5 class="font-bold">Welcome</h5>
+                                        <h5 class="text-muted mb-0" id="uname"> <div class="spinner-border" role="status">
+                                                        <span class="visually-hidden">Loading...</span>
+                                                    </div></h6>
                                     </div>
                                 </div>
                             </div>
@@ -247,6 +248,9 @@ function get_time_ago($time)
                             }, 2000) /* time in milliseconds (ie 2 seconds)*/
                             setInterval(function() {
                                 $('#rightToWork').load('ComplianceCheckRTW.php');
+                            }, 2000) /* time in milliseconds (ie 2 seconds)*/
+                            setInterval(function() {
+                                $('#uname').load('getUsername.php');
                             }, 2000) /* time in milliseconds (ie 2 seconds)*/
     </script>
 
