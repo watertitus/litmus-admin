@@ -4,7 +4,7 @@ try {
 
     $email = $_GET['email'];
     $sql = "SELECT * FROM  nok WHERE 
-                    -- user_profile.user_email=users.email AND nok.user_email=users.email  AND dbs.user_email=users.email AND 
+
                     user_email=:email";
     $stmt = $conn->prepare($sql);
     $stmt->bindValue(':email', $email);
@@ -13,20 +13,7 @@ try {
         $gest = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($gest as $key => $users) {
             if (!empty($users['nok_email']) || !empty($users['nok_fname']) || !empty($users['nok_relation'])) { ?>
-                <tr>
-
-                    <th>
-                        <strong> Refree <?php echo $count += 1; ?></strong>
-                    </th>
-                    <th>
-
-                        <p class="h3 text-success"><i class="bi bi-check2-circle"></i></p>
-
-
-
-                    </th>
-
-                </tr>
+              
                 <tr>
                     <td>Next of kin's Name: </td>
                     <td> <?php echo $users['nok_fname']  ?> <?php echo $users['nok_lname']  ?></td>

@@ -38,12 +38,14 @@
                         $mail->Subject = 'Urgent: Qualification/Certification Declined';
                         if ($users['qualification_type'] === "others") {
                             $qualType = $users['qualification_type'];
+                            $other_cert = '';
                         } else {
+                            $qualType = '';
                             $other_cert = $users['other_cert'];
                         }
                         /* Set the mail message body. */
                         $html = file_get_contents("https://litmusservices.co.uk/api/EmailTemplate.html");
-                        $html = str_replace("{EmailTitle}", 'Qualification/Certification Declined: ' . $qualType . $other_cert . ' ' . $users['ref_fname'], $html);
+                        $html = str_replace("{EmailTitle}", 'Qualification/Certification Declined: ' . $qualType . $other_cert, $html);
                         $html = str_replace("{EmailContent1}", "Dear " . $cand_email, $html);
                         $html = str_replace("{EmailContent2}", "Your Qualification Doc has just been declined or Rejected by the Litmus team.<br/><br/>
                         Kindly logon to your dashboard to provide another Quaalification or Certification", $html);
@@ -73,11 +75,11 @@
                         $table = 'qualification';
                         $isRefApproved = 'true';
                         $query = "UPDATE " . $table . " 
-                                    SET isRefApproved = :isRefApproved
-                                WHERE   referee_id = :id";
+                                    SET isApproved = :isApproved
+                                WHERE   qualification_id = :id";
                         $stmt = $conn->prepare($query);
                         $stmt->bindParam(':id', $id);
-                        $stmt->bindParam(':isRefApproved', $isRefApproved);
+                        $stmt->bindParam(':isApproved', $isRefApproved);
 
                         $mail->isSMTP();                            // Set mailer to use SMTP 
                         $mail->Host = 'litmusservices.co.uk';           // Specify main and backup SMTP servers 
@@ -97,7 +99,7 @@
 
                         /* Set the mail message body. */
                         $html = file_get_contents("https://litmusservices.co.uk/api/EmailTemplate.html");
-                        $html = str_replace("{EmailTitle}", 'Reference Approved: ' . $users['ref_fname'] . ' ' . $users['ref_fname'], $html);
+                        $html = str_replace("{EmailTitle}", 'Approval Notice for Certification/Qualification: ' . $users['qualification_type'] . ' (' . ($users['qualification_type'] != 'others' ?  $users['qualification_type'] :  $users['other_cert']) . ')', $html);
                         $html = str_replace("{EmailContent1}", "Congratulations", $html);
                         $html = str_replace("{EmailContent2}", "Your Qualifcation/Certifcation had just been Approved by the Litmus team.<br/><br/>
                         If you are yet to complete your profile, kindly do so as soon as possible ", $html);
@@ -127,7 +129,7 @@
                     <th>Qualification</th>
                     <th>
                         <?php
-                        if ($users['status'] === 1) { ?>
+                        if ($users['isApproved'] === 'true') { ?>
                             <p class="h3 text-success"><i class="bi bi-check2-circle"></i></p>
                         <?php       } else { ?>
                             <form method="POST">
@@ -142,16 +144,18 @@
                     </th>
                 </tr>
                 <tr>
+
                     <td>Name of Certifiction/Qualification:</td>
-                    <td><?php if ($users['qualification_type'] === "others") {
+                    <td><?php if ($users['qualification_type'] != "others") {
                             echo $users['qualification_type'];
                         } else {
                             echo $users['other_cert'];
                         }  ?></td>
                 </tr>
                 <tr>
-                    <td>File:</td>
+                    <td>File: </td>
                     <td><img src="<?php echo $users['qualification_file']  ?>" /></td>
+                    
                 </tr>
                 <tr>
                     <td colspan="2">

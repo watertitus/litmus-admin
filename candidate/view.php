@@ -102,6 +102,7 @@ function get_time_ago($time)
                     <!-- Basic Tables start -->
                     <section class="section">
                         <div class="row">
+                            <!-- //referre -->
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-header">
@@ -130,6 +131,7 @@ function get_time_ago($time)
                                     </div>
                                 </div>
                             </div>
+                            <!-- NOK -->
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-header">
@@ -159,7 +161,7 @@ function get_time_ago($time)
                                     </div>
                                 </div>
                             </div>
-
+                            <!-- work -->
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-header">
@@ -189,6 +191,7 @@ function get_time_ago($time)
                                     </div>
                                 </div>
                             </div>
+                            <!-- Qual -->
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-header">
@@ -204,7 +207,7 @@ function get_time_ago($time)
                                                 <tfoot>
                                                     <tr>
                                                         <th>
-                                                            <form action="./pdf/workPDF.php" method="POST">
+                                                            <form action="./pdf/qualPDF.php" method="POST">
                                                                 <input type="hidden" name="user_email" value="<?php echo $user['user_email'] ?>">
                                                                 <input type="hidden" name="user_name" value="<?php echo $user['fname'] . ' ' . $user['fname']; ?>">
 
@@ -218,23 +221,23 @@ function get_time_ago($time)
                                     </div>
                                 </div>
                             </div>
-
+<!-- dbs -->
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h5 class=" card-title text-capitalize" type="button" data-bs-toggle="collapse" data-bs-target="#collapsequal" aria-expanded="false" aria-controls="collapseExample">DBS</h5>
+                                        <h5 class=" card-title text-capitalize" type="button" data-bs-toggle="collapse" data-bs-target="#collapsedbs" aria-expanded="false" aria-controls="collapseExample">DBS</h5>
 
                                     </div>
-                                    <div class="collapse" id="collapsequal">
+                                    <div class="collapse" id="collapsedbs">
                                         <div class="card-body">
                                             <table>
-                                                <tbody id="qual">
+                                                <tbody id="dbs">
                                                     <?php include './dbs.php' ?>
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
                                                         <th>
-                                                            <form action="./pdf/workPDF.php" method="POST">
+                                                            <form action="./pdf/dbsPDF.php" method="POST">
                                                                 <input type="hidden" name="user_email" value="<?php echo $user['user_email'] ?>">
                                                                 <input type="hidden" name="user_name" value="<?php echo $user['fname'] . ' ' . $user['fname']; ?>">
 

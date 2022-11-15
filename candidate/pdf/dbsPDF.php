@@ -56,7 +56,7 @@ if (isset($_POST['download'])) {
     $user_name = $_POST['user_name'];
     $email = $_POST['user_email'];
     $email = $_POST['user_email'];
-    $sql = "SELECT * FROM  work_permit WHERE 
+    $sql = "SELECT * FROM  dbs WHERE 
                     user_email=:email";
     $stmt = $conn->prepare($sql);
     $stmt->bindValue(':email', $email);
@@ -65,7 +65,7 @@ if (isset($_POST['download'])) {
     $pdf->AddPage();
     $pdf->AliasNbPages();
     $pdf->SetFont('arial', 'B', 16);
-    $pdf->Cell(0, 15, "Work Document for " . $_POST['user_name'], 0, 1, "L");
+    $pdf->Cell(0, 15, "DBS Documnet" . $_POST['user_name'], 0, 1, "L");
     $pdf->SetFont('times', 'B', 10);
     $pdf->Cell(0, 7, "Applicant Email: " . $email, 0, 1, "L");
     if ($stmt->rowCount()) {
@@ -73,37 +73,27 @@ if (isset($_POST['download'])) {
         foreach ($gest as $key => $users) {
 
             $pdf->SetFont('times', '', 9);
-            $pdf->Cell(30, 7, "Document  Type: ", 0, 0);
-            $pdf->Cell(30, 7, $users['visa_type'], 0, 1);
+            $pdf->Cell(30, 7, "DBS Expiry Date: ", 0, 0);
+            $pdf->Cell(30, 7, $users['exp_date'], 0, 1);
             //line
-            $pdf->Cell(30, 7, "Expiry Date: ", 0, 0);
-            $pdf->Cell(60, 7, $users['expiry'], 0, 1);
-            //line
-            $pdf->Cell(30, 7, "Natiionality: ", 0, 0);
-            $pdf->Cell(30, 7, $users['nationality'], 0, 1);
-            //lone
-            $pdf->Cell(30, 7, "NIN: ", 0, 0);
-            $pdf->Cell(30, 7, $users['insurancenumber'], 0, 1);
-            $pdf->Cell(30, 7, "File: ", 0, 0);
-            $pdf->Cell(30, 7, $users['permit_file'], 0, 1);
-            $url = strval($users['permit_file']);
-           
+
+            $url = strval($users['dbsfile']);
 
             $file_info = new finfo(FILEINFO_MIME_TYPE);
-            $mime_type = $file_info->buffer(file_get_contents($users['permit_file']));
+            $mime_type = $file_info->buffer(file_get_contents($url));
             if ($mime_type === 'image/png') {
                 $mime_type = "PNG";
                 $pdf->Image($url, 20, 90, 0, 0, $mime_type);
                 $pdf->Ln();
-            }elseif($mime_type === 'image/jpeg'){
+            } elseif ($mime_type === 'image/jpeg') {
                 $mime_type = "JPG";
                 $pdf->Image($url, 20, 90, 0, 0, $mime_type);
                 $pdf->Ln();
-            }elseif($mime_type === 'image/jpg'){
+            } elseif ($mime_type === 'image/jpg') {
                 $mime_type = "JPG";
                 $pdf->Image($url, 20, 90, 0, 0, $mime_type);
                 $pdf->Ln();
-            }elseif($mime_type === 'image/gif'){
+            } elseif ($mime_type === 'image/gif') {
                 $mime_type = "GIF";
                 $pdf->Image($url, 20, 90, 0, 0, $mime_type);
                 $pdf->Ln();
@@ -115,7 +105,7 @@ if (isset($_POST['download'])) {
                 $pdf->Cell(30, 7, "Compliance Document is Approved ", 0, 1);
                 $pdf->SetTextColor(0, 0, 0);
                 //line
-                
+
             } else {
                 $pdf->SetTextColor(222, 9, 9);
                 $pdf->Cell(50, 7, "Compliance Document hass not been Approved!", 0, 1);
